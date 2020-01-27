@@ -1,0 +1,19 @@
+#!/bin/bash
+
+chmod +s /usr/bin/darkmodetoggled
+
+if [ ! -f /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.enable.sh ]; then
+    touch /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.enable.sh
+    chown mobile /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.enable.sh
+    chmod 777 /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.enable.sh
+    echo "#!/bin/bash" >> /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.enable.sh
+fi
+
+if [ ! -f /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.disable.sh ]; then
+    touch /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.disable.sh
+    chown mobile /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.disable.sh
+    chmod 777 /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.disable.sh
+    echo "#!/bin/bash" >> /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.disable.sh
+fi
+
+exit 0

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Apply changes to tweak choices by toggling dark mode. No action is needed for the other 3 options</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>When in light mode</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Disable these tweaks</string>
+			<key>detail</key>
+			<string>DMTDisabledInLightModeController</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>When in dark mode</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Disable these tweaks</string>
+			<key>detail</key>
+			<string>DMTDisabledInDarkModeController</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Control center toggle mode</string>
+			<key>footerText</key>
+			<string>iOS 13 mode: toggle tweaks with the stock iOS 13 dark mode module. Custom mode: toggle with my custom module. iOS 13 mode only works on iOS 13.0+</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>default</key>
+			<string>ios13</string>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+			<key>key</key>
+			<string>ccToggleMode</string>
+			<key>label</key>
+			<string>Control center toggle mode</string>
+			<key>validTitles</key>
+			<array>
+				<string>iOS 13</string>
+				<string>Custom</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>ios13</string>
+				<string>custom</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Respring mode</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>default</key>
+			<string>ask</string>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+			<key>key</key>
+			<string>respringMode</string>
+			<key>label</key>
+			<string>Respring mode</string>
+			<key>validTitles</key>
+			<array>
+				<string>None</string>
+				<string>Ask to respring</string>
+				<string>Auto respring</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>none</string>
+				<string>ask</string>
+				<string>auto</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Scripts</string>
+			<key>footerText</key>
+			<string>When toggling dark mode, run the scripts at /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.enable.sh and com.captinc.darkmodetoggle.disable.sh. They are run as root, so be very careful about what you put in them</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+			<key>key</key>
+			<string>runScripts</string>
+			<key>label</key>
+			<string>Run scripts</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>DarkModeToggle</string>
+</dict>
+</plist>
