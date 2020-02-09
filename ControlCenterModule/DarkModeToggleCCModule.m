@@ -1,4 +1,5 @@
 #import <ControlCenterUIKit/CCUIToggleModule.h>
+#import "../Shared.h"
 
 @interface DarkModeToggleCCModule : CCUIToggleModule {
     BOOL _selected;
@@ -23,20 +24,21 @@
     return [UIColor blackColor];
 }
 
-- (BOOL)isSelected { //other parts of my tweak update whether or not dark mode is on, so we need to make my custom module selected based on what the plist says
-    NSString *pathToPlistFile = @"/var/mobile/Library/Preferences/com.captinc.darkmodetoggle.plist";
-    NSDictionary *tweakPrefs = [NSDictionary dictionaryWithContentsOfFile:pathToPlistFile];
+- (BOOL)isSelected { //other parts of my tweak update whether or not dark mode is on, so this method needs to return YES/NO based on what the plist says
+    NSDictionary *tweakPrefs = [NSDictionary dictionaryWithContentsOfFile:plistPath]; //load prefs
     NSString *ccToggleMode = [tweakPrefs objectForKey:@"ccToggleMode"];
-    NSString *darkModeState = [tweakPrefs objectForKey:@"darkModeState"];
-    if ([ccToggleMode isEqualToString:@"custom"] && [darkModeState isEqualToString:@"dark"]) { //only make the module selected if the user chose "Custom mode" in prefs
+    if (!ccToggleMode) {
+        ccToggleMode = @"ios13";
+    }
+    NSString *darkModeState = [tweakPrefs objectForKey:@"darkModeState"]; //no need to check for nil here because this key is not an actual setting that you can change in Settings > DarkModeToggle
+    if ([ccToggleMode isEqualToString:@"custom"] && [darkModeState isEqualToString:@"dark"]) { //only make the module selected if the user chose "Custom mode" in my prefs
         return YES;
     }
     return NO;
 }
 
 - (void)setSelected:(BOOL)selected {
-    NSString *pathToPlistFile = @"/var/mobile/Library/Preferences/com.captinc.darkmodetoggle.plist"; //load prefs
-    NSMutableDictionary *tweakPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:pathToPlistFile];
+    NSMutableDictionary *tweakPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
     if (!tweakPrefs) {
         tweakPrefs = [[NSMutableDictionary alloc] init];
     }
@@ -45,11 +47,11 @@
         ccToggleMode = @"ios13";
     }
     
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     if ([ccToggleMode isEqualToString:@"custom"]) {
         _selected = selected;
         [super refreshState];
         
-        NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
         if (_selected) {
             [tweakPrefs setObject:@"dark" forKey:@"darkModeState"]; //write the current dark mode state to my plist
             [dict setObject:@"enableDarkMode" forKey:@"changeToMode"]; //pass this string to ControlCenterAlert/Tweak.xm using NSNotification & NSDictionary
@@ -58,12 +60,12 @@
             [tweakPrefs setObject:@"light" forKey:@"darkModeState"];
             [dict setObject:@"disableDarkMode" forKey:@"changeToMode"];
         }
-        
-        [tweakPrefs writeToFile:pathToPlistFile atomically:YES];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.captinc.showDarkModeToggleCCAlert" object:nil userInfo:dict];
+        [tweakPrefs writeToFile:plistPath atomically:YES];
     }
-    else { //this means the user tapped my module when they chose to user "iOS 13 mode" in prefs. obviously that doesn't work. code is continued in ControlCenterAlert/Tweak.xm
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.captinc.showDarkModeToggleCustomModuleError" object:nil userInfo:nil];
+    else { //this means the user tapped my module when they chose "iOS 13 mode" in prefs. obviously that doesn't work
+        [dict setObject:@"error" forKey:@"changeToMode"];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.captinc.darkmodetoggle.showCCAlert" object:nil userInfo:dict]; //code is continued in ControlCenterAlert/Tweak.xm
 }
 @end

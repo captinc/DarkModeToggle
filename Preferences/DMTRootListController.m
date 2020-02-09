@@ -1,5 +1,6 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
+#import "../Shared.h"
 
 @interface DMTRootListController : PSListController
 - (void)viewDidLoad;
@@ -21,23 +22,21 @@
     return _specifiers;
 }
 
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    NSString *pathToPlistFile = @"/var/mobile/Library/Preferences/com.captinc.darkmodetoggle.plist";
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:pathToPlistFile];
-    if (!dict) { //you always need to check if what you got from the plist file is nil and assign it a value if necessary. if you don't do this, you will get unexpected behavior
-        dict = [[NSMutableDictionary alloc] init];
-    }
-    [dict setObject:value forKey:[specifier propertyForKey:@"key"]];
-    [dict writeToFile:pathToPlistFile atomically:YES];
-}
-
 - (id)readPreferenceValue:(PSSpecifier *)specifier {
-    NSString *pathToPlistFile = @"/var/mobile/Library/Preferences/com.captinc.darkmodetoggle.plist";
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:pathToPlistFile];
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
     id object = [dict objectForKey:[specifier propertyForKey:@"key"]];
-    if (!object) {
+    if (!object) { //you always need to check if what you got from the plist file is nil and assign it a value if necessary. if you don't do this, you will get unexpected behavior
         object = [specifier propertyForKey:@"default"];
     }
     return object;
+}
+
+- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+    if (!dict) {
+        dict = [[NSMutableDictionary alloc] init];
+    }
+    [dict setObject:value forKey:[specifier propertyForKey:@"key"]];
+    [dict writeToFile:plistPath atomically:YES];
 }
 @end

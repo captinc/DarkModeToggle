@@ -4,7 +4,7 @@ include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = DarkModeToggleCCModule
 DarkModeToggleCCModule_FILES = DarkModeToggleCCModule.m
-DarkModeToggleCCModule_INSTALL_PATH = /Library/ControlCenter/Bundles/
+DarkModeToggleCCModule_INSTALL_PATH = /Library/ControlCenter/Bundles
 DarkModeToggleCCModule_CFLAGS = -fobjc-arc
 DarkModeToggleCCModule_FRAMEWORKS = UIKit
 DarkModeToggleCCModule_PRIVATE_FRAMEWORKS = ControlCenterUIKit

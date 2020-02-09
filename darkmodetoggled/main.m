@@ -1,7 +1,7 @@
-#import "../NSTask.h"
 #import <stdio.h>
 #import <string.h>
 #import <dlfcn.h>
+#import "../NSTask.h"
 #define FLAG_PLATFORMIZE (1 << 1)
 
 void fixSetuidForChimera() { //on Chimera, you have to do this fancy stuff to make yourself root (cannot simply do setuid() like unc0ver/checkra1n)
@@ -34,13 +34,13 @@ void fixSetuidForChimera() { //on Chimera, you have to do this fancy stuff to ma
     setgid(0);
 }
 
-int main(int argc, char *argv[], char *envp[]) {
+int main(int argc, char *argv[], char *envp[]) { //runs the corresponding script as root for enabling/disabling DarkModeToggle
     if (argc < 2) {
         printf("Error: you must specify 'enableDarkMode' or 'disableDarkMode' to choose which corresponding script to run\n");
         return 1;
     }
     
-    setuid(0); //make me root
+    setuid(0); //make us root
     if (getuid() != 0) {
         fixSetuidForChimera();
     }
@@ -53,7 +53,7 @@ int main(int argc, char *argv[], char *envp[]) {
         scriptToRun = @"/var/mobile/Library/Preferences/com.captinc.darkmodetoggle.disable.sh";
     }
     
-    NSTask *task = [[NSTask alloc] init]; //run the correct script as root
+    NSTask *task = [[NSTask alloc] init];
     task.launchPath = @"/bin/bash";
     task.arguments = @[scriptToRun];
     [task launch];

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+chown root:wheel /usr/bin/darkmodetoggled
 chmod +s /usr/bin/darkmodetoggled
 
 if [ ! -f /var/mobile/Library/Preferences/com.captinc.darkmodetoggle.enable.sh ]; then

@@ -8,23 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Apply changes to tweak choices by toggling dark mode. No action is needed for the other 3 options</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>When in light mode</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>label</key>
-			<string>Disable these tweaks</string>
-			<key>detail</key>
-			<string>DMTDisabledInLightModeController</string>
-			<key>isController</key>
-			<true/>
+			<string>Apply changes by toggling dark mode</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -35,10 +19,46 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>DMTDisabledTweaksInDarkMode</string>
 			<key>label</key>
 			<string>Disable these tweaks</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>DMTDisabledInDarkModeController</string>
+			<string>DMTPrefsForOtherTweaksInDarkMode</string>
+			<key>label</key>
+			<string>Apply these preferences to other tweaks</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>When in light mode</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>DMTDisabledTweaksInLightMode</string>
+			<key>label</key>
+			<string>Disable these tweaks</string>
+			<key>isController</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>DMTPrefsForOtherTweaksInLightMode</string>
+			<key>label</key>
+			<string>Apply these preferences to other tweaks</string>
 			<key>isController</key>
 			<true/>
 		</dict>
@@ -53,14 +73,14 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>Control center toggle mode</string>
+			<key>key</key>
+			<string>ccToggleMode</string>
 			<key>default</key>
 			<string>ios13</string>
 			<key>defaults</key>
 			<string>com.captinc.darkmodetoggle</string>
-			<key>key</key>
-			<string>ccToggleMode</string>
-			<key>label</key>
-			<string>Control center toggle mode</string>
 			<key>validTitles</key>
 			<array>
 				<string>iOS 13</string>
@@ -81,14 +101,14 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>Respring mode</string>
+			<key>key</key>
+			<string>respringMode</string>
 			<key>default</key>
 			<string>ask</string>
 			<key>defaults</key>
 			<string>com.captinc.darkmodetoggle</string>
-			<key>key</key>
-			<string>respringMode</string>
-			<key>label</key>
-			<string>Respring mode</string>
 			<key>validTitles</key>
 			<array>
 				<string>None</string>
@@ -113,14 +133,20 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Run scripts</string>
+			<key>key</key>
+			<string>runScripts</string>
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
 			<string>com.captinc.darkmodetoggle</string>
-			<key>key</key>
-			<string>runScripts</string>
-			<key>label</key>
-			<string>Run scripts</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>v1.1</string>
 		</dict>
 	</array>
 	<key>title</key>

@@ -3,7 +3,7 @@ TARGET = iphone:clang:11.2:11.0
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = DarkModeTogglePrefs
-DarkModeTogglePrefs_FILES = $(wildcard *.m)
+DarkModeTogglePrefs_FILES = $(wildcard *.m */*.m)
 DarkModeTogglePrefs_INSTALL_PATH = /Library/PreferenceBundles
 DarkModeTogglePrefs_CFLAGS = -fobjc-arc
 DarkModeTogglePrefs_PRIVATE_FRAMEWORKS = Preferences

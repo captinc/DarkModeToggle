@@ -10,12 +10,12 @@
 		<string>PSLinkCell</string>
 		<key>detail</key>
 		<string>DMTRootListController</string>
+		<key>label</key>
+		<string>DarkModeToggle</string>
 		<key>icon</key>
 		<string>PrefsIcon</string>
 		<key>isController</key>
 		<true/>
-		<key>label</key>
-		<string>DarkModeToggle</string>
 	</dict>
 </dict>
 </plist>

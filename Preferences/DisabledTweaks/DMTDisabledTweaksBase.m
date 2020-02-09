@@ -1,10 +1,11 @@
-#import "DMTTweaksPickerBaseController.h"
+#import "DMTDisabledTweaksBase.h"
+#import "../../Shared.h"
 //we want to make 2 submenus - one for tweaks to disable in dark mode & one for tweaks to disable in light mode
-//the submenus would be very similar and only have a few small differences, so I wanted to have code-reuse
-//I do this by making a base controller, making two subclasses of the base, and then overriding navBarTitle and keyInPlistFile to pass info to the base
+//the submenus would be very similar, so I wanted to have code-reuse
+//I do this by making a base class, making two subclasses of it, and then overriding navBarTitle and keyInPlistFile in the subclasses to pass info to the base class
 
-@implementation DMTTweaksPickerBaseController
-- (NSString *)navBarTitle { //override these 2 methods in subclasses to pass info to this class
+@implementation DMTDisabledTweaksBase
+- (NSString *)navBarTitle {
     return nil;
 }
 
@@ -24,7 +25,9 @@
         [_specifiers addObject:[PSSpecifier groupSpecifierWithName:@"Disable these tweaks"]]; //section title/header
         
         //do not allow disabling MobileSafety and PreferenceLoader because that's just asking for trouble
-        //Disallowing Choicy is necessary because: 1. Choicy loads before DarkModeToggle and therefore can't be disabled by DarkModeToggle anyway, and 2. this ensures the user can use Choicy to disable DarkModeToggle for debugging or something
+        //disallowing Choicy is necessary because:
+            //1. Choicy loads before DarkModeToggle and therefore can't be disabled by DarkModeToggle anyway
+            //2. this ensures the user can use Choicy to disable DarkModeToggle if necessary
         NSArray *tweaksToNotShow = @[@"001_DarkModeToggleTweaksDisabler", @"DarkModeToggleCCAlert", @"MobileSafety", @"000_Choicy", @"ChoicySB", @"PreferenceLoader"];
         for (NSString *dylib in [self listOfDylibs]) {
             if (![tweaksToNotShow containsObject:dylib]) {
@@ -61,10 +64,9 @@
 }
 
 - (void)loadTweakChoices {
-    NSString *pathToPlistFile = @"/var/mobile/Library/Preferences/com.captinc.darkmodetoggle.plist";
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:pathToPlistFile];
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
     NSArray *array = [dict objectForKey:[self keyInPlistFile]];
-    if (array) {
+    if (array) { //remember: always check if what you got from the plist file is nil to avoid unwanted behavior
         _tweakChoices = [array mutableCopy];
     }
     else {
@@ -73,13 +75,12 @@
 }
 
 - (void)saveTweakChoices {
-    NSString *pathToPlistFile = @"/var/mobile/Library/Preferences/com.captinc.darkmodetoggle.plist";
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:pathToPlistFile];
-	if (!dict) { //remember: always check if what you got from the plist file is nil to avoid unwanted behavior
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+	if (!dict) {
 		dict = [[NSMutableDictionary alloc] init];
 	}
     [dict setObject:[_tweakChoices copy] forKey:[self keyInPlistFile]];
-	[dict writeToFile:pathToPlistFile atomically:YES];
+	[dict writeToFile:plistPath atomically:YES];
 }
 
 - (NSArray *)listOfDylibs { //creates an array of all tweak dylibs so we can choose which ones to disable
@@ -92,6 +93,7 @@
             [dylibs addObject:[item.path.lastPathComponent stringByDeletingPathExtension]];
         }
     }
-    return [[dylibs copy] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    
+    return [[dylibs copy] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 }
 @end
