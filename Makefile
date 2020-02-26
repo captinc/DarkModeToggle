@@ -5,7 +5,7 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = DarkModeToggle
 DarkModeToggle_CFLAGS = -fobjc-arc
 
-SUBPROJECTS += ControlCenterAlert ControlCenterModule darkmodetoggled Preferences TweaksDisabler
+SUBPROJECTS += ControlCenterModule darkmodetoggled Preferences SB TweaksDisabler
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 before-stage::

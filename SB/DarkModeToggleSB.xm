@@ -1,13 +1,19 @@
-#import "DarkModeToggleCCAlert.h"
+//Adding support for a new toggle from another tweak usually only requires 2 things:
+//1. Add an entry in PrefsForOtherTweaks.plist
+//2. Add an entry in "- (NSDictionary *)infoAboutOtherTweaks"
+//However, some tweaks may require special handling (such as Noctis and SnowBoard)
+
+//Note: if you added support for another toggle/tweak and DarkModeToggle doesn't change the value in that tweak's plist, the FIRST thing you should try is this:
+//    1. Go to that toggle/tweak's entry in "- (NSDictionary *)infoAboutOtherTweaks"
+//    2. Change |@"mode":@"CF",| to |@"mode":@"NS",| (vice versa applies too). Do not include the "|"
+
+#import "DarkModeToggleSB.h"
 #import "../Shared.h"
 #import "../NSTask.h"
-//Adding support for a new toggle from another tweak only requires 2 things:
-//1. Add an entry in PrefsForOtherTweaks.plist
-//2. Add an entry in "- (NSDictionary *)infoAboutOthers"
 
-@implementation DarkModeToggleCCAlert
+@implementation DarkModeToggleSB
 + (instancetype)sharedInstance {
-    static DarkModeToggleCCAlert *singleton;
+    static DarkModeToggleSB *singleton;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         singleton = [[self alloc] init];
@@ -16,12 +22,12 @@
 }
 
 - (void)showAlert:(NSString *)changeToMode CCViewController:(UIViewController *)CCVC { //shows the UIAlertController you see in Control Center when using my tweak
-    NSDictionary *tweakPrefs = [NSDictionary dictionaryWithContentsOfFile:plistPath]; //load prefs
-    NSString *respringMode = [tweakPrefs objectForKey:@"respringMode"];
+    NSDictionary *rootDict = [NSDictionary dictionaryWithContentsOfFile:plistPath]; //load prefs
+    NSString *respringMode = [rootDict objectForKey:@"respringMode"];
     if (!respringMode) {
         respringMode = @"ask";
     }
-    BOOL shouldRunScript = [[tweakPrefs objectForKey:@"runScripts"] boolValue];
+    BOOL shouldRunScript = [[rootDict objectForKey:@"runScripts"] boolValue];
     
     if ([respringMode isEqualToString:@"none"]) { //if the user chose "None" for "Respring mode" in prefs
         if (shouldRunScript) {
@@ -117,7 +123,7 @@
 - (void)updatePrefsForOtherTweaks:(NSString *)changeToMode { //updates prefs any tweaks that the uesr chose in "Settings > DarkModeToggle > Apply these preferences to other tweaks"
     NSString *prefsKeyForCurrentState; //determine if we just enabled or disabled dark mode and set these variables accordingly so they will access the correct info from my .plist
     NSString *defaultValueForCurrentState;
-    if ([changeToMode isEqualToString:@"enableDarkMode"]) {
+    if ([changeToMode isEqualToString:@"enable"]) {
         prefsKeyForCurrentState = @"prefsForOthersInDarkMode";
         defaultValueForCurrentState = @"defaultValueWhenDark";
     }
@@ -126,28 +132,31 @@
         defaultValueForCurrentState = @"defaultValueWhenLight";
     }
     
-    NSDictionary *tweakPrefs = [NSDictionary dictionaryWithContentsOfFile:plistPath];
-    NSDictionary *prefsForOthers = [tweakPrefs objectForKey:prefsKeyForCurrentState];
+    NSDictionary *rootDict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+    NSDictionary *prefsForOthers = [rootDict objectForKey:prefsKeyForCurrentState];
     if (!prefsForOthers) {
         prefsForOthers = [[NSDictionary alloc] init];
     }
-    NSDictionary *infoAboutOthers = [self infoAboutOthers];
+    NSDictionary *infoAboutOtherTweaks = [self infoAboutOtherTweaks];
     
-    for (NSString *tweak in infoAboutOthers) {
-        NSString *keyForIsChangingPrefsEnabled = [tweak stringByAppendingString:@"-enabled"];
-        if ([prefsForOthers objectForKey:keyForIsChangingPrefsEnabled]) { //if the enabled switch is on for the tweak referenced in this loop iteration
-            NSDictionary *infoAboutTweak = [infoAboutOthers objectForKey:tweak]; //load information for the tweak handled in this loop iteration
+    for (NSString *tweak in infoAboutOtherTweaks) {
+        BOOL isChangingPrefsEnabled = [[prefsForOthers objectForKey:[tweak stringByAppendingString:@"-enabled"]] boolValue];
+        if (isChangingPrefsEnabled) { //if the enabled switch is on for the tweak referenced in this loop iteration
+            //load information for the tweak handled in this loop iteration
+            NSDictionary *infoAboutTweak = [infoAboutOtherTweaks objectForKey:tweak];
             NSString *keyInOtherPref = [infoAboutTweak objectForKey:@"keyInOtherPref"];
             NSString *keyType = [infoAboutTweak objectForKey:@"keyType"];
             NSString *keyForValueInCurrentState = [tweak stringByAppendingString:@"-value"]; //load the wanted value for the current dark mode state
-            NSString *valueInCurrentState = [prefsForOthers objectForKey:keyForValueInCurrentState];
+            id valueInCurrentState = [prefsForOthers objectForKey:keyForValueInCurrentState];
             if (!valueInCurrentState) { //always check if what we got from the .plist is nil and handle accordingly
                 valueInCurrentState = [infoAboutTweak objectForKey:defaultValueForCurrentState];
             }
+            NSString *mode = [infoAboutTweak objectForKey:@"mode"];
             NSString *plistName = [infoAboutTweak objectForKey:@"plistName"];
-            CFStringRef notificationName = (__bridge CFStringRef)[infoAboutTweak objectForKey:@"notificationName"]; //see below for an explanation about this
+            NSString *notificationName = [infoAboutTweak objectForKey:@"notificationName"]; //see below for an explanation about this
             
-            CFPropertyListRef valueToSetForCFMode; //convert the wanted value to the appropriate data type for use with either the CF method or NS method (explanation below)
+            //convert the wanted value to the appropriate data type for use with either the CF method or NS method (explanation below)
+            CFPropertyListRef valueToSetForCFMode;
             id valueToSetForNSMode;
             if ([keyType isEqualToString:@"string"]) {
                 valueToSetForCFMode = (__bridge CFPropertyListRef)valueInCurrentState;
@@ -162,14 +171,32 @@
                 valueToSetForCFMode = (__bridge CFPropertyListRef)[NSNumber numberWithBool:[valueInCurrentState boolValue]];
                 valueToSetForNSMode = [NSNumber numberWithBool:[valueInCurrentState boolValue]];
             }
+            else if ([keyType isEqualToString:@"array"]) {
+                valueToSetForCFMode = (__bridge CFArrayRef)valueInCurrentState;
+                valueToSetForNSMode = valueInCurrentState;
+            }
             
             //actually set the pref value for the other tweak
-            //for some reason, setting prefs via CFPreferencesSetAppValue() works for somet tweaks but not others. the same is true for using NSMutableDictionary and writeToFile:atomically:
-            //so, we have to specify which method to use for each supported tweak
-            if ([[infoAboutTweak objectForKey:@"mode"] isEqualToString:@"CF"]) {
-                CFPreferencesSetAppValue((__bridge CFStringRef)keyInOtherPref, valueToSetForCFMode, (__bridge CFStringRef)plistName);
+            if ([mode isEqualToString:@"special"]) { //some tweaks require special handling
+                NSString *path = [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@%@", plistName, @".plist"];
+                NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:path];
+                if (!dict) {
+                    dict = [[NSMutableDictionary alloc] init];
+                }
+                BOOL existingValue = [[dict objectForKey:keyInOtherPref] boolValue]; //the current value in the other tweak's plist
+                BOOL wantedValue = [valueInCurrentState boolValue];
+                
+                //only toggle the other tweak if it's not in the state we want and if it's installed
+                if ([tweak isEqualToString:@"noctis12"]) {
+                    SpringBoard *sb = (SpringBoard *)[%c(SpringBoard) sharedApplication];
+                    BOOL noctis12IsInstalled = [sb respondsToSelector:@selector(darkModeChanged)];
+                    if (existingValue != wantedValue && noctis12IsInstalled) {
+                        [sb darkModeChanged]; //this method is provided by Noctis. it toggles Noctis to the opposite state
+                    }
+                }
+                continue;
             }
-            else {
+            else if ([mode isEqualToString:@"NS"]) { //for some reason, CFPreferencesSetAppValue() does not work for some tweaks, so use NSMutableDictionary instead
                 NSString *path = [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@%@", plistName, @".plist"];
                 NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:path];
                 if (!dict) {
@@ -178,94 +205,153 @@
                 [dict setObject:valueToSetForNSMode forKey:keyInOtherPref];
                 [dict writeToFile:path atomically:YES];
             }
+            else if ([mode isEqualToString:@"CF"]) { //normal mode
+                CFPreferencesSetAppValue((__bridge CFStringRef)keyInOtherPref, valueToSetForCFMode, (__bridge CFStringRef)plistName);
+            }
             
             //if necessary, post a notification telling that tweak to update its prefs
-            //must use CFNotificationCenter instead of NSNotificationCenter because this notification needs to be global/cross between processes
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), notificationName, nil, nil, true);
+            //must use CFNotificationCenter instead of NSNotificationCenter because this notification needs to be global (cross between processes)
+            if (![notificationName isEqual:[NSNull null]]) {
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (__bridge CFStringRef)notificationName, nil, nil, true);
+            }
         }
     }
 }
 
-- (NSDictionary *)infoAboutOthers { //a list of necessary information for changing prefs of another tweak
+- (NSDictionary *)infoAboutOtherTweaks { //a list of necessary information for changing prefs of another tweak
     return @{
+            @"betterAlerts":@{
+                    @"keyInOtherPref":@"blurOption",
+                    @"keyType":@"string",
+                    @"defaultValueWhenDark":@"3",
+                    @"defaultValueWhenLight":@"2",
+                    @"mode":@"CF",
+                    @"plistName":@"com.adamseiter.betteralerts",
+                    @"notificationName":@"com.adamseiter.betteralerts/preferencesChanged"},
+            
             @"callBarXS":@{
                     @"keyInOtherPref":@"viewStyle",
                     @"keyType":@"number",
-                    @"mode":@"CF",
                     @"defaultValueWhenDark":@"5",
                     @"defaultValueWhenLight":@"4",
+                    @"mode":@"CF",
                     @"plistName":@"net.limneos.callbarx",
                     @"notificationName":@"net.limneos.callbarx.settingsChanged"},
             
             @"complications":@{
                     @"keyInOtherPref":@"backgroundStyle",
                     @"keyType":@"string",
-                    @"mode":@"CF",
                     @"defaultValueWhenDark":@"Dark",
                     @"defaultValueWhenLight":@"Light",
+                    @"mode":@"CF",
                     @"plistName":@"com.bengiannis.complicationsprefs",
-                    @"notificationName":@"com.captinc.darkmodetoggle.null"},
+                    @"notificationName":[NSNull null]},
             
             @"grupi":@{
                     @"keyInOtherPref":@"CellStyle",
                     @"keyType":@"number",
-                    @"mode":@"CF",
                     @"defaultValueWhenDark":@"1",
                     @"defaultValueWhenLight":@"0",
+                    @"mode":@"CF",
                     @"plistName":@"com.peterdev.grupi",
                     @"notificationName":@"com.peterdev.grupi/ReloadPrefs"},
             
             @"mot":@{
                     @"keyInOtherPref":@"isDarkModeEnabled",
                     @"keyType":@"bool",
-                    @"mode":@"CF",
                     @"defaultValueWhenDark":@"YES",
                     @"defaultValueWhenLight":@"NO",
+                    @"mode":@"CF",
                     @"plistName":@"com.donbytyqi.mot",
                     @"notificationName":@"com.donbytyqi.mot/settingsChanged"},
+            
+            @"noctis12":@{
+                    @"keyInOtherPref":@"enabled",
+                    @"keyType":@"bool",
+                    @"defaultValueWhenDark":@"YES",
+                    @"defaultValueWhenLight":@"NO",
+                    @"mode":@"special",
+                    @"plistName":@"com.laughingquoll.noctis12prefs.settings",
+                    @"notificationName":[NSNull null]},
             
             @"pencilChargingIndicator":@{
                     @"keyInOtherPref":@"appearance",
                     @"keyType":@"string",
-                    @"mode":@"CF",
                     @"defaultValueWhenDark":@"1",
                     @"defaultValueWhenLight":@"0",
+                    @"mode":@"CF",
                     @"plistName":@"com.shiftcmdk.pencilchargingindicatorpreferences",
                     @"notificationName":@"com.shiftcmdk.pencilchargingindicatorpreferences.prefschanged"},
+            
+            @"pullOverPro":@{
+                    @"keyInOtherPref":@"darkHandle",
+                    @"keyType":@"bool",
+                    @"defaultValueWhenDark":@"YES",
+                    @"defaultValueWhenLight":@"NO",
+                    @"mode":@"CF",
+                    @"plistName":@"com.c1d3r.PullOverPro",
+                    @"notificationName":[NSNull null]},
             
             @"ringer13":@{
                     @"keyInOtherPref":@"darkMode",
                     @"keyType":@"bool",
-                    @"mode":@"NS",
                     @"defaultValueWhenDark":@"YES",
                     @"defaultValueWhenLight":@"NO",
+                    @"mode":@"NS",
                     @"plistName":@"com.kingpuffdaddi.ringer13prefs",
                     @"notificationName":@"com.kingpuffdaddi.ringer13prefs/settingschanged"},
+            
+            @"selectionPlus":@{
+                    @"keyInOtherPref":@"BlurStyle",
+                    @"keyType":@"number",
+                    @"defaultValueWhenDark":@"2",
+                    @"defaultValueWhenLight":@"1",
+                    @"mode":@"NS",
+                    @"plistName":@"com.satvikb.selectionplusprefs",
+                    @"notificationName":@"com.satvikb.selectionplusprefs/ReloadPrefs"},
+            
+            @"sileo":@{
+                    @"keyInOtherPref":@"darkMode",
+                    @"keyType":@"bool",
+                    @"defaultValueWhenDark":@"YES",
+                    @"defaultValueWhenLight":@"NO",
+                    @"mode":@"CF",
+                    @"plistName":@"org.coolstar.SileoStore",
+                    @"notificationName":[NSNull null]},
+            
+            @"snowBoard":@{
+                    @"keyInOtherPref":@"ActiveMenuItems",
+                    @"keyType":@"array",
+                    @"defaultValueWhenDark":[[NSArray alloc] init],
+                    @"defaultValueWhenLight":[[NSArray alloc] init],
+                    @"mode":@"NS",
+                    @"plistName":@"com.spark.snowboardprefs",
+                    @"notificationName":@"com.spark.snowboard.refreshNow"},
             
             @"tacitus":@{
                     @"keyInOtherPref":@"Style",
                     @"keyType":@"number",
-                    @"mode":@"CF",
                     @"defaultValueWhenDark":@"1",
                     @"defaultValueWhenLight":@"2",
+                    @"mode":@"CF",
                     @"plistName":@"com.twickd.tacituspreferences",
                     @"notificationName":@"com.tacitus.config/refresh"},
             
             @"ultrasound":@{
                     @"keyInOtherPref":@"Theme",
                     @"keyType":@"string",
-                    @"mode":@"CF",
                     @"defaultValueWhenDark":@"ABVolumeHUDThemeDark",
                     @"defaultValueWhenLight":@"ABVolumeHUDThemeExtraLight",
+                    @"mode":@"CF",
                     @"plistName":@"applebetas.ios.tweak.willow",
                     @"notificationName":@"applebetas.ios.tweak.willow.changed"},
             
             @"XIIIHUDMute":@{
                     @"keyInOtherPref":@"darkMode",
                     @"keyType":@"bool",
-                    @"mode":@"CF",
                     @"defaultValueWhenDark":@"YES",
                     @"defaultValueWhenLight":@"NO",
+                    @"mode":@"CF",
                     @"plistName":@"com.xcxiao.xiiihudpb",
                     @"notificationName":@"com.xcxiao.xiiihudpb"}
     };

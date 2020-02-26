@@ -1,7 +1,4 @@
-#import "DMTPrefsForOtherTweaksBase.h"
-
-@interface DMTPrefsForOtherTweaksInLightMode : DMTPrefsForOtherTweaksBase
-@end
+#import "DMTPrefsForOtherTweaksAll.h"
 
 @implementation DMTPrefsForOtherTweaksInLightMode
 - (NSString *)navBarTitle {

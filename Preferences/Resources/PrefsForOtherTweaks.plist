@@ -14,6 +14,44 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>label</key>
+			<string>BetterAlerts</string>
+			<key>key</key>
+			<string>betterAlerts-enabled</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>BetterAlerts</string>
+			<key>key</key>
+			<string>betterAlerts-value</string>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+			<key>validTitles</key>
+			<array>
+				<string>Dark</string>
+				<string>Light</string>
+				<string>Extra Light</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>3</string>
+				<string>2</string>
+				<string>1</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
 			<string>CallBar XS</string>
 			<key>key</key>
 			<string>callBarXS-enabled</string>
@@ -182,6 +220,42 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>label</key>
+			<string>Noctis12</string>
+			<key>key</key>
+			<string>noctis12-enabled</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>Noctis12</string>
+			<key>key</key>
+			<string>noctis12-value</string>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+			<key>validTitles</key>
+			<array>
+				<string>Dark</string>
+				<string>Light</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>YES</string>
+				<string>NO</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
 			<string>PencilChargingIndicator</string>
 			<key>key</key>
 			<string>pencilChargingIndicator-enabled</string>
@@ -228,6 +302,42 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>label</key>
+			<string>PullOver Pro</string>
+			<key>key</key>
+			<string>pullOverPro-enabled</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>PullOver Pro</string>
+			<key>key</key>
+			<string>pullOverPro-value</string>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+			<key>validTitles</key>
+			<array>
+				<string>Dark</string>
+				<string>Light</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>YES</string>
+				<string>NO</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
 			<string>Ringer13</string>
 			<key>key</key>
 			<string>ringer13-enabled</string>
@@ -255,6 +365,104 @@
 				<string>YES</string>
 				<string>NO</string>
 			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>SelectionPlus</string>
+			<key>key</key>
+			<string>selectionPlus-enabled</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>SelectionPlus</string>
+			<key>key</key>
+			<string>selectionPlus-value</string>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+			<key>validTitles</key>
+			<array>
+				<string>Dark</string>
+				<string>Light</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>2</string>
+				<string>1</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Sileo</string>
+			<key>key</key>
+			<string>sileo-enabled</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>Sileo</string>
+			<key>key</key>
+			<string>sileo-value</string>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+			<key>validTitles</key>
+			<array>
+				<string>Dark</string>
+				<string>Light</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>YES</string>
+				<string>NO</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>SnowBoard</string>
+			<key>key</key>
+			<string>snowBoard-enabled</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.captinc.darkmodetoggle</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>SnowBoard</string>
+			<key>action</key>
+			<string>didTapOpenSnowBoardPrefs</string>
+			<key>key</key>
+			<string>snowBoard-value</string>
 		</dict>
 		<dict>
 			<key>cell</key>

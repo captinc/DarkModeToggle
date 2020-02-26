@@ -1,7 +1,4 @@
-#import "DMTDisabledTweaksBase.h"
-
-@interface DMTDisabledTweaksInLightMode : DMTDisabledTweaksBase
-@end
+#import "DMTDisabledTweaksAll.h"
 
 @implementation DMTDisabledTweaksInLightMode
 - (NSString *)navBarTitle {

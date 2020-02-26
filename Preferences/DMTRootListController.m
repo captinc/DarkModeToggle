@@ -1,13 +1,5 @@
-#import <Preferences/PSListController.h>
-#import <Preferences/PSSpecifier.h>
+#import "DMTRootListController.h"
 #import "../Shared.h"
-
-@interface DMTRootListController : PSListController
-- (void)viewDidLoad;
-- (NSMutableArray *)specifiers;
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier;
-- (id)readPreferenceValue:(PSSpecifier *)specifier;
-@end
 
 @implementation DMTRootListController
 - (void)viewDidLoad {
@@ -38,5 +30,10 @@
     }
     [dict setObject:value forKey:[specifier propertyForKey:@"key"]];
     [dict writeToFile:plistPath atomically:YES];
+}
+
+- (void)didTapHelpButton {
+    NSDictionary *options = @{UIApplicationOpenURLOptionUniversalLinksOnly:@NO};
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.reddit.com/r/jailbreak/comments/euiss0/release_darkmodetoggle_enabledisable_specific"] options:options completionHandler:nil];
 }
 @end

@@ -7,12 +7,6 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>Apply changes by toggling dark mode</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>When in dark mode</string>
 		</dict>
@@ -21,20 +15,20 @@
 			<string>PSLinkCell</string>
 			<key>detail</key>
 			<string>DMTDisabledTweaksInDarkMode</string>
-			<key>label</key>
-			<string>Disable these tweaks</string>
 			<key>isController</key>
 			<true/>
+			<key>label</key>
+			<string>Disable these tweaks</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
 			<string>DMTPrefsForOtherTweaksInDarkMode</string>
-			<key>label</key>
-			<string>Apply these preferences to other tweaks</string>
 			<key>isController</key>
 			<true/>
+			<key>label</key>
+			<string>Apply these preferences to other tweaks</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -47,20 +41,20 @@
 			<string>PSLinkCell</string>
 			<key>detail</key>
 			<string>DMTDisabledTweaksInLightMode</string>
-			<key>label</key>
-			<string>Disable these tweaks</string>
 			<key>isController</key>
 			<true/>
+			<key>label</key>
+			<string>Disable these tweaks</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
 			<string>DMTPrefsForOtherTweaksInLightMode</string>
-			<key>label</key>
-			<string>Apply these preferences to other tweaks</string>
 			<key>isController</key>
 			<true/>
+			<key>label</key>
+			<string>Apply these preferences to other tweaks</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -145,8 +139,24 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Info</string>
 			<key>footerText</key>
-			<string>v1.1</string>
+			<string>Apply changes by toggling dark mode. Each time you toggle dark mode, some tweaks and/or preferences may require a respring, while others may not</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Help</string>
+			<key>action</key>
+			<string>didTapHelpButton</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>v1.2</string>
 		</dict>
 	</array>
 	<key>title</key>

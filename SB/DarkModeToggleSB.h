@@ -1,4 +1,4 @@
-@interface DarkModeToggleCCAlert : UIViewController
+@interface DarkModeToggleSB : NSObject
 + (instancetype)sharedInstance;
 
 - (void)showAlert:(NSString *)changeToMode CCViewController:(UIViewController *)CCVC;
@@ -9,5 +9,9 @@
 - (void)addButtonsToAlert:(UIAlertController *)alert;
 
 - (void)updatePrefsForOtherTweaks:(NSString *)changeToMode;
-- (NSDictionary *)infoAboutOthers;
+- (NSDictionary *)infoAboutOtherTweaks;
+@end
+
+@interface SpringBoard : UIApplication //required for Noctis support
+- (void)darkModeChanged;
 @end

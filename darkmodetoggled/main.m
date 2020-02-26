@@ -36,7 +36,7 @@ void fixSetuidForChimera() { //on Chimera, you have to do this fancy stuff to ma
 
 int main(int argc, char *argv[], char *envp[]) { //runs the corresponding script as root for enabling/disabling DarkModeToggle
     if (argc < 2) {
-        printf("Error: you must specify 'enableDarkMode' or 'disableDarkMode' to choose which corresponding script to run\n");
+        printf("Error: you must specify 'enable' or 'disable' to choose which corresponding script to run\n");
         return 1;
     }
     
@@ -46,7 +46,7 @@ int main(int argc, char *argv[], char *envp[]) { //runs the corresponding script
     }
     
     NSString *scriptToRun;
-    if (!strcmp(argv[1], "enableDarkMode")) {
+    if (!strcmp(argv[1], "enable")) {
         scriptToRun = @"/var/mobile/Library/Preferences/com.captinc.darkmodetoggle.enable.sh";
     }
     else {

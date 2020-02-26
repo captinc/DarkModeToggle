@@ -6,6 +6,7 @@ BUNDLE_NAME = DarkModeTogglePrefs
 DarkModeTogglePrefs_FILES = $(wildcard *.m */*.m)
 DarkModeTogglePrefs_INSTALL_PATH = /Library/PreferenceBundles
 DarkModeTogglePrefs_CFLAGS = -fobjc-arc
+DarkModeTogglePrefs_FRAMEWORKS = UIKit
 DarkModeTogglePrefs_PRIVATE_FRAMEWORKS = Preferences
 
 include $(THEOS_MAKE_PATH)/bundle.mk

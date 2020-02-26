@@ -1,8 +1,9 @@
-#import "DMTDisabledTweaksBase.h"
-#import "../../Shared.h"
 //we want to make 2 submenus - one for tweaks to disable in dark mode & one for tweaks to disable in light mode
 //the submenus would be very similar, so I wanted to have code-reuse
 //I do this by making a base class, making two subclasses of it, and then overriding navBarTitle and keyInPlistFile in the subclasses to pass info to the base class
+
+#import "DMTDisabledTweaksAll.h"
+#import "../../Shared.h"
 
 @implementation DMTDisabledTweaksBase
 - (NSString *)navBarTitle {
@@ -25,24 +26,30 @@
         [_specifiers addObject:[PSSpecifier groupSpecifierWithName:@"Disable these tweaks"]]; //section title/header
         
         //do not allow disabling MobileSafety and PreferenceLoader because that's just asking for trouble
-        //disallowing Choicy is necessary because:
-            //1. Choicy loads before DarkModeToggle and therefore can't be disabled by DarkModeToggle anyway
-            //2. this ensures the user can use Choicy to disable DarkModeToggle if necessary
-        NSArray *tweaksToNotShow = @[@"001_DarkModeToggleTweaksDisabler", @"DarkModeToggleCCAlert", @"MobileSafety", @"000_Choicy", @"ChoicySB", @"PreferenceLoader"];
+        //disallowing disabling other tweak disablers is a good idea so users can disable DarkModeToggle if necessary
+        NSArray *tweaksToNotShow = @[@"001_DarkModeToggleTweaksDisabler", @"DarkModeToggleSB", @"MobileSafety", @"PreferenceLoader", @"000_Choicy", @"ChoicySB", @" TweakConfigurator", @"TweakRestrictor", @"zzzzzzUnSub", @"NoSubstitute", @"NoSubstitute12", @"PalBreakSB"];
         for (NSString *dylib in [self listOfDylibs]) {
             if (![tweaksToNotShow containsObject:dylib]) {
-                PSSpecifier *specifierForTweak = [PSSpecifier preferenceSpecifierNamed:dylib target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
-                [specifierForTweak setProperty:@YES forKey:@"enabled"];
-                [specifierForTweak setProperty:dylib forKey:@"key"];
-                [_specifiers addObject:specifierForTweak];
+                PSSpecifier *specifierForTheme = [PSSpecifier preferenceSpecifierNamed:dylib target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+                [specifierForTheme setProperty:@YES forKey:@"enabled"];
+                [specifierForTheme setProperty:dylib forKey:@"key"];
+                [_specifiers addObject:specifierForTheme];
             }
         }
         
         PSSpecifier *footer = [PSSpecifier emptyGroupSpecifier];
-        [footer setProperty:@"You can not disable Choicy nor PreferenceLoader due to a compatibility issue" forKey:@"footerText"];
+        NSString *msg = @"Due to a compatibility issue, you cannot disable PreferenceLoader, Choicy, NoSubstitute, NoSubstitute12, NoSub (PalBreak w/ options), TweakConfigurator, TweakRestrictor, and UnSub";
+        [footer setProperty:msg forKey:@"footerText"];
         [_specifiers addObject:footer];
     }
     return _specifiers;
+}
+
+- (id)readPreferenceValue:(PSSpecifier *)specifier {
+    if ([_tweakChoices containsObject:[specifier propertyForKey:@"key"]]) {
+        return @YES;
+    }
+    return [specifier propertyForKey:@"default"]; //do this instead of "return @NO" so you can turn some toggles on by default if you wish. i don't do that in this tweak, but its useful in other situations
 }
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
@@ -56,18 +63,11 @@
     [self saveTweakChoices];
 }
 
-- (id)readPreferenceValue:(PSSpecifier *)specifier {
-    if ([_tweakChoices containsObject:[specifier propertyForKey:@"key"]]) {
-        return @YES;
-	}
-    return [specifier propertyForKey:@"default"]; //do this instead of "return @NO" so you can turn some toggles on by default if you wish. i don't do that in this tweak, but its useful in other situations
-}
-
 - (void)loadTweakChoices {
     NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
-    NSArray *array = [dict objectForKey:[self keyInPlistFile]];
-    if (array) { //remember: always check if what you got from the plist file is nil to avoid unwanted behavior
-        _tweakChoices = [array mutableCopy];
+    NSArray *tweakChoicesInPlist = [dict objectForKey:[self keyInPlistFile]];
+    if (tweakChoicesInPlist) { //remember: always check if what you got from the plist file is nil to avoid unwanted behavior
+        _tweakChoices = [tweakChoicesInPlist mutableCopy];
     }
     else {
         _tweakChoices = [[NSMutableArray alloc] init];
@@ -89,8 +89,8 @@
     
     NSMutableArray *dylibs = [[NSMutableArray alloc] init];
     for (NSURL *item in folderContents) {
-        if (![item.pathExtension isEqualToString:@"plist"] && [item checkResourceIsReachableAndReturnError:nil]) {
-            [dylibs addObject:[item.path.lastPathComponent stringByDeletingPathExtension]];
+        if ([item.pathExtension isEqualToString:@"dylib"] && [item checkResourceIsReachableAndReturnError:nil]) {
+            [dylibs addObject:item.path.lastPathComponent.stringByDeletingPathExtension];
         }
     }
     

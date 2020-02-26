@@ -1,6 +1,6 @@
 Package: com.captinc.darkmodetoggle
 Name: DarkModeToggle
-Version: 1.1
+Version: 1.2
 Depends: firmware (>=11.0), mobilesubstrate, com.opa334.ccsupport, preferenceloader
 Author: Capt Inc <teamcaptinc@gmail.com>
 Maintainer: Capt Inc <teamcaptinc@gmail.com>
