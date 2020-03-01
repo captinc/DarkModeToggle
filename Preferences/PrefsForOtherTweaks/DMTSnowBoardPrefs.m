@@ -19,7 +19,7 @@
 }
 
 - (void)createTableView {
-    CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height);
+    CGRect frame = self.previousVC.view.frame;
     UITableView *tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStylePlain];
     [tableView registerClass:[UITableViewCell self] forCellReuseIdentifier:@"Cell"];
     tableView.delegate = self;
@@ -145,7 +145,7 @@
     
     _availableThemes = [[NSMutableArray alloc] init];
     for (NSURL *item in folderContents) {
-        if ([item.pathExtension caseInsensitiveCompare:@"theme"] == NSOrderedSame && [item checkResourceIsReachableAndReturnError:nil]) {
+        if ([item checkResourceIsReachableAndReturnError:nil]) {
             [_availableThemes addObject:item.path];
         }
     }

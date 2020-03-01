@@ -1,11 +1,11 @@
-# DarkModeToggle v1.2
+# DarkModeToggle v1.2.1
 Enable/disable specific tweaks when toggling dark mode
 
 Compatible with iOS 11.0+
 
 Repo: [https://captinc.github.io](https://captinc.github.io)
 
-[Direct .deb download](https://github.com/captinc/DarkModeToggle/releases/download/v1.2/com.captinc.darkmodetoggle_1.2_iphoneos-arm.deb)
+[Direct .deb download](https://github.com/captinc/DarkModeToggle/releases/download/v1.2.1/com.captinc.darkmodetoggle_1.2.1_iphoneos-arm.deb)
 
 [Reddit post](https://www.reddit.com/r/jailbreak/comments/euiss0/release_darkmodetoggle_enabledisable_specific)
 
